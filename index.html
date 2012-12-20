@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Decatime</title>
+
+        <style>
+            html {
+                font-family: serif;
+                color: #333;
+                background: #eee;
+                height: 100%;
+            }
+
+            #decatime {
+                text-align: center;
+                font-size: 18pt;
+                position: absolute;
+                top: 25%;
+                width: 100%;
+            }
+
+            span {
+                font-weight: bold;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div id="decatime">
+            <p>The time is <span id="time"></span> on the <span id="day"></span> of the monk of <span id="monk"></span>.</p>
+        </div>
+    </body>
+
+    <script>
+        // 10 hours a day
+        // 100 minutes an hour
+        // 100 seconds a minute
+        // 1 new second = 864 milliseconds
+
+        function getTime(d) {
+            var partOfDay = (d.getTime() % 86400000) / 86400000;
+
+            var h = Math.floor(partOfDay * 10);
+
+            var m = Math.floor(partOfDay * 1000) % 100;
+
+            var s = Math.floor(partOfDay * 100000) % 100;
+
+            return {
+                "hours": h,
+                "minutes": m,
+                "seconds": s
+            };
+        }
+
+        function getDate(d) {
+            var monk, day;
+
+            var startOfYear = new Date(d.getFullYear(), 0, 1, 0, 0, 0, 0).getTime();
+
+            var dayOfYear = Math.floor((d - startOfYear) / 86400000);
+
+            if(dayOfYear < 5) {
+                monk = 0;
+            } else {
+                monk = 1 + Math.floor((dayOfYear - 5) / 10);
+            }
+
+            if(dayOfYear < 5) {
+                day = 1 + dayOfYear;
+            } else {
+                day = 1 + ((dayOfYear - 5) % 10);
+            }
+
+            return {
+                "day": day,
+                "monk": monk
+            };
+        }
+
+        var ONES = [
+            "",
+            "hena",
+            "di",
+            "tri",
+            "tetra",
+            "penta",
+            "hexa",
+            "hepta",
+            "octa",
+            "enneaa"
+        ];
+
+        function nameNumber(n) {
+            if(n === 0) {
+                return "nil";
+            } else if(n < 10) {
+                return ONES[n];
+            } else if(n == 10) {
+                return "deca";
+            } else if(n < 20) {
+                return ONES[n % 10] + "deca";
+            } else if(n < 30) {
+                return "icosa" + ONES[n % 10];
+            } else if(n < 40) {
+                return "triaconta" + ONES[n % 10];
+            }
+        }
+
+        function zeroPad(n, len) {
+            n = "" + n;
+
+            len = len || 2;
+
+            while(n.length < len) {
+                n = "0" + n;
+            }
+
+            return n;
+        }
+
+        function setTime() {
+            var d = new Date();
+
+            var newTime = getTime(d);
+
+            var newDate = getDate(d);
+
+            document.getElementById("time").innerText = zeroPad(newTime.hours) + ":" + zeroPad(newTime.minutes) + "." + zeroPad(newTime.seconds);
+
+            document.getElementById("day").innerText = nameNumber(newDate.day) + "day";
+
+            document.getElementById("monk").innerText = nameNumber(newDate.monk) + "cember";
+        }
+
+        setTime();
+
+        setInterval(setTime, 864);
+    </script>
+</html>
