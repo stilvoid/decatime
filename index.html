@@ -88,7 +88,7 @@
             "hexa",
             "hepta",
             "octa",
-            "enneaa"
+            "ennea"
         ];
 
         function nameNumber(n) {
@@ -104,6 +104,22 @@
                 return "icosa" + ONES[n % 10];
             } else if(n < 40) {
                 return "triaconta" + ONES[n % 10];
+            }
+        }
+
+        function nameDay(n) {
+            n = nameNumber(n);
+
+            return n + "day";
+        }
+
+        function nameMonk(n) {
+            n = nameNumber(n);
+
+            if(/[^aeiou]a$/.test(n)) {
+                return n.substring(0, n.length - 1) + "ember";
+            } else {
+                return n + "cember";
             }
         }
 
@@ -128,9 +144,9 @@
 
             document.getElementById("time").innerText = zeroPad(newTime.hours) + ":" + zeroPad(newTime.minutes) + "." + zeroPad(newTime.seconds);
 
-            document.getElementById("day").innerText = nameNumber(newDate.day) + "day";
+            document.getElementById("day").innerText = nameDay(newDate.day);
 
-            document.getElementById("monk").innerText = nameNumber(newDate.monk) + "cember";
+            document.getElementById("monk").innerText = nameMonk(newDate.monk);
         }
 
         setTime();
