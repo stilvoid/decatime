@@ -19,6 +19,10 @@ function getTime(d) {
     };
 }
 
+function isLeapYear(d) {
+    return new Date(d.getFullYear(), 1, 29).getMonth() == 1;
+}
+
 function getDate(d) {
     var monk, day;
 
@@ -26,16 +30,22 @@ function getDate(d) {
 
     var dayOfYear = Math.floor((d - startOfYear) / 86400000);
 
-    if(dayOfYear < 5) {
-        monk = 0;
-    } else {
-        monk = 1 + Math.floor((dayOfYear - 5) / 10);
+    var nilLength = 5;
+
+    if(isLeapYear(d)) {
+        nilLength = 6;
     }
 
-    if(dayOfYear < 5) {
+    if(dayOfYear < nilLength) {
+        monk = 0;
+    } else {
+        monk = 1 + Math.floor((dayOfYear - nilLength) / 10);
+    }
+
+    if(dayOfYear < nilLength) {
         day = 1 + dayOfYear;
     } else {
-        day = 1 + ((dayOfYear - 5) % 10);
+        day = 1 + ((dayOfYear - nilLength) % 10);
     }
 
     return {
@@ -54,7 +64,7 @@ var ONES = [
     "hexa",
     "hepta",
     "octa",
-    "ennea"
+    "nona"
 ];
 
 function nameNumber(n) {
